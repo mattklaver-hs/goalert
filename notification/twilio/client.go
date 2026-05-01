@@ -45,6 +45,10 @@ type VoiceOptions struct {
 
 	// Params will be added to the voice callback URL
 	Params url.Values
+
+	// Extension is an optional DTMF sequence sent after the call connects.
+	// Supports digits, *, #, w (0.5s pause), and W (1s pause), e.g. "ww1234" or "WW#1234".
+	Extension string
 }
 
 func (sms *SMSOptions) apply(v url.Values) {
@@ -62,6 +66,9 @@ func (voice *VoiceOptions) apply(v url.Values) {
 	}
 	if voice.ValidityPeriod != 0 {
 		v.Set("ValidityPeriod", strconv.FormatFloat(voice.ValidityPeriod.Seconds(), 'f', -1, 64))
+	}
+	if voice.Extension != "" {
+		v.Set("SendDigits", voice.Extension)
 	}
 }
 
